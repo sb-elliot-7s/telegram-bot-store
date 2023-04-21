@@ -1,0 +1,11 @@
+grpcio==1.53.0
+grpcio-tools == 1.53.0
+protobuf==4.22.1
+pydantic[email,dotenv] == 1.10.7
+orjson==3.8.7
+motor==3.1.2
+boto3==1.26.108
+redis[hiredis] ==4.4.4
+geopy==2.3.0
+numpy==1.24.2
+aiohttp==3.8.4
