@@ -17,6 +17,8 @@ class Configs(BaseSettings):
     mongo_host: str
     mongo_port: int
 
+    app_name: str
+
     class Config:
         env_file = '.env'
         env_file_encoding = 'utf-8'
