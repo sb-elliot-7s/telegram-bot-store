@@ -1,11 +1,8 @@
-import logging
 from dataclasses import dataclass, field
 from typing import Callable, Any, Iterable
 
 import orjson
 from redis import asyncio as aioredis
-
-logging.basicConfig(level=logging.DEBUG, filename='ccc.log')
 
 
 @dataclass
