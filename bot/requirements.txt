@@ -1,0 +1,7 @@
+pydantic[email,dotenv] == 1.10.7
+aiogram==2.25.1
+aiokafka==0.8.0
+grpcio==1.53.0
+grpcio-tools==1.53.0
+protobuf==4.22.1
+orjson==3.8.9
