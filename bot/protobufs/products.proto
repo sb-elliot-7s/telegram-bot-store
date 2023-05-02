@@ -1,0 +1,182 @@
+syntax = "proto3";
+
+
+message BrandRequest {
+  string value = 1;
+}
+
+message Brand {
+  int32 id = 1;
+  string name = 2;
+}
+
+message BrandsResponse {
+  repeated Brand results = 1;
+}
+
+message CategoryRequest {
+  string brand = 1;
+}
+
+message Category {
+  int32 id = 1;
+  string name = 2;
+  string brand = 3;
+}
+
+message CategoryResponse {
+  repeated Category results = 1;
+}
+
+message ProductRequest {
+  string product_id = 1;
+}
+
+message ProductSearchRequest {
+  string product_name = 1;
+}
+
+message ProductsRequest{
+  string brand = 1;
+  string category = 2;
+  int32 page = 3;
+}
+
+message ProductsCountRequest {
+  string brand = 1;
+  string category = 2;
+}
+
+message ProductsCountResponse {
+  int32 products_count = 1;
+}
+
+
+message ProductResponse {
+  bool availability = 1;
+  float wholesale_price = 2;
+  float minimum_retail_price = 3;
+  string package_size = 4;
+  string fuel_consumption = 5;
+  string ignition_system = 6;
+  string engine_drawing = 7;
+  string shaft_drawing = 8;
+  string idle_speed = 9;
+  string shaft_length = 10;
+  string engine_type = 11;
+  string shaft_type = 12;
+  string presence_of_a_gearbox = 13;
+  string shaft_location = 14;
+  string rated_generator_power = 15;
+  string fuel_consumption_g = 16;
+  string fuel_consumption_lc = 17;
+  string time_of_continuous_work = 18;
+
+  string vendor_code = 19;
+  string manufacturer = 20;
+  string preparation_for_work = 21;
+  string manufacturers_warranty = 22;
+  string description = 23;
+  string recommend_price_with_symbol = 24;
+  string ats = 25;
+  string applied_engine_power = 26;
+  string alternator = 27;
+  string degree_of_protection = 28;
+  string output_voltage = 29;
+  string output_frequency = 30;
+  string noise_level = 31;
+  string availability_of_outlets = 32;
+  string number_of_phases = 33;
+  string availability_of_batteries = 34;
+  string availability_of_wheels = 35;
+  string availability_of_handles = 36;
+  string rated_current = 37;
+  string packing_dimensions = 38;
+  string automatic_voltage_regulator = 39;
+  string alternator_winding = 40;
+  string generator_type = 41;
+
+  string engine = 42;
+  string engine_displacement = 43;
+  string pipe_diameter = 44;
+  string launch_system = 45;
+  string lifting_height = 46;
+  string performance = 47;
+  string fence_depth = 48;
+  string power = 49;
+  string dimensions = 50;
+  string oil_tank_volume = 51;
+  string gasoline_diesel = 52;
+  string fuel_tank_volume = 53;
+  string water_quality = 54;
+  string weight_brutto = 55;
+  string fraction_size = 56;
+  string max_power = 57;
+
+  string rated_power = 58;
+  string weight_netto = 59;
+  string working_volume = 60;
+  string max_rpm = 61;
+  string type_engine = 62;
+  string engine_oil_volume = 63;
+  string launch = 64;
+  string cylinder_diameter = 65;
+  string piston_stroke = 66;
+  string fuel_tank_capacity = 67;
+  string lighting_coil = 68;
+  string the_presence_of_a_gearbox = 69;
+  string fuel_supply_system = 70;
+  string engine_model = 71;
+  string torque = 72;
+  string shaft_diameter = 73;
+  string compression_ratio = 74;
+
+  string title = 75;
+  string brand = 76;
+  string category = 77;
+  string descr_from_excel = 78;
+  string recommend_price = 79;
+  string photo_url = 80;
+  string id = 81;
+  repeated string photo_urls = 82;
+  repeated string images = 83;
+  repeated string telegram_file_ids = 84;
+}
+
+message ListProductsResponse {
+  repeated ProductResponse products = 1;
+}
+
+message SpecifiactionsResponse {
+  string result = 1;
+}
+
+message ServiceCenterRequest {
+  string city = 1;
+}
+
+message ServiceCenterResponse {
+  string id = 1;
+  string name = 2;
+  string phone = 3;
+  string region = 4;
+  string address = 5;
+  string latitude = 6;
+  string longitude = 7;
+  string url = 8;
+}
+
+message ServiceCenterListResponse {
+  repeated ServiceCenterResponse results = 1;
+}
+
+service ProductsService {
+  rpc GetBrands(BrandRequest) returns (BrandsResponse) {}
+  rpc GetCategories(CategoryRequest) returns (CategoryResponse) {}
+  rpc Search(ProductSearchRequest) returns (ProductResponse) {}
+  rpc GetSpecifications(ProductRequest) returns (SpecifiactionsResponse) {}
+  rpc GetProduct(ProductRequest) returns (ProductResponse) {}
+  rpc GetProducts(ProductsRequest) returns (ListProductsResponse) {}
+  rpc GetCount(ProductsCountRequest) returns (ProductsCountResponse) {}
+  rpc GetServiceCenter(ServiceCenterRequest) returns (ServiceCenterListResponse) {}
+}
