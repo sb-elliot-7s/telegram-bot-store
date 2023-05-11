@@ -1,0 +1,124 @@
+version: '3'
+
+
+services:
+  zookeeper:
+    image:
+      confluentinc/cp-zookeeper:7.3.2
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+  #    restart: always
+
+  kafka_broker:
+    image: confluentinc/cp-kafka:7.3.2
+    container_name: broker
+    #    restart: always
+    ports:
+      # To learn about configuring Kafka for access across networks see
+      # https://www.confluent.io/blog/kafka-client-cannot-connect-to-broker-on-aws-on-docker-etc/
+      - "9092:9092"
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka_broker:9092,PLAINTEXT_INTERNAL://broker:29092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+    healthcheck:
+      test: [ "CMD", "kafka-topics", "--bootstrap-server", "broker:9092", "--list" ]
+      interval: 45s
+      timeout: 10s
+      retries: 15
+
+  redis:
+    image: redis
+    container_name: redis_container
+    ports:
+      - "6379:6379"
+    restart: always
+    volumes:
+      - cache:/data
+
+  mongo:
+    image: mongo
+    container_name: mongo_container
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  products:
+    build:
+      context: ./products
+    container_name: products
+    restart: always
+    ports:
+      - "50051:50051"
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      MONGO_HOST: mongo
+      MONGO_PORT: 27017
+    depends_on:
+      - redis
+      - mongo
+
+  bot:
+    build:
+      context: ./bot
+    container_name: bot_container
+    restart: always
+    depends_on:
+      kafka_broker:
+        condition: service_healthy
+    environment:
+      KAFKA_BROKER: kafka_broker:9092
+      GRPC_HOST: products
+
+  users:
+    build:
+      context: ./users
+    container_name: user_container
+    restart: always
+    ports:
+      - "8001:8001"
+    depends_on:
+      kafka_broker:
+        condition: service_healthy
+      mongo:
+        condition: service_started
+    environment:
+      HOST: 0.0.0.0
+      PORT: 8001
+      MONGO_HOST: mongo
+      MONGO_PORT: 27017
+      KAFKA_BROKER: kafka_broker:9092
+
+  payments:
+    build:
+      context: ./payments
+    container_name: payments_container
+    restart: always
+    depends_on:
+      kafka_broker:
+        condition: service_healthy
+      mongo:
+        condition: service_started
+    environment:
+      MONGO_HOST: mongo
+      MONGO_PORT: 27017
+      KAFKA_BROKER: kafka_broker:9092
+
+volumes:
+  mongo_data:
+  cache:
+    driver: local
+  second_cache:
+    driver: local
+  my_data:
