@@ -39,5 +39,4 @@ class ServiceCenterHandler:
                     await callback_query.message.answer(text=address.address)
             case Brand.LONCIN.value:
                 await callback_query.message.answer(text='Показать: ', reply_markup=loncin_service_center_keyboard())
-
         await delete_message_after_sleep(message=callback_query.message, sleep_time=1)
